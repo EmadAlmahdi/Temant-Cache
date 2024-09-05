@@ -1,0 +1,44 @@
+{
+    "name": "temant/cache-manager",
+    "description": "A flexible caching system with multiple adapters (Redis, Memcached, File).",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Temant\\Cache\\": "Src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Temant\\Cache\\": "Tests/"
+        }
+    },
+    "require": {
+        "psr/cache": "^3.0",
+        "ext-redis": "*",
+        "ext-memcached": "*"
+    },
+    "require-dev": {
+        "mikey179/vfsstream": "^1.6",
+        "symfony/var-dumper": "^7.1",
+        "phpunit/phpunit": "^11.2",
+        "phpstan/phpstan": "^1.0"
+    },
+    "scripts": {
+        "test": [
+            "./vendor/bin/phpunit"
+        ],
+        "phpstan": [
+            "./vendor/bin/phpstan analyse"
+        ],
+        "check-all": [
+            "@phpstan",
+            "@test"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "platform-check": false,
+        "sort-packages": true
+    }
+}

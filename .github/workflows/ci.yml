@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+      memcached:
+        image: memcached:latest
+        ports:
+          - 11211:11211
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up PHP with Composer
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        tools: composer, phpunit, phpstan
+        extensions: redis, memcached
+
+    # Install dependencies
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    # Run PHPStan for static analysis
+    - name: Run PHPStan
+      run: vendor/bin/phpstan analyse
+
+    # Run PHPUnit tests with coverage
+    - name: Run PHPUnit
+      env:
+        MEMCACHED_HOST: localhost
+        MEMCACHED_PORT: 11211
+        REDIS_HOST: localhost
+        REDIS_PORT: 6379
+      run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+    # Upload code coverage to Codecov
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
