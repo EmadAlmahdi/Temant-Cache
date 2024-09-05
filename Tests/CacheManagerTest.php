@@ -23,19 +23,7 @@ namespace Tests\Temant\Cache {
 
         protected function setUp(): void
         {
-            $this->defaultAdapter = $this->getMockBuilder(CacheAdapterInterface::class)
-                ->onlyMethods([
-                    'getItem',
-                    'getItems',
-                    'hasItem',
-                    'clear',
-                    'deleteItem',
-                    'deleteItems',
-                    'save',
-                    'saveDeferred',
-                    'commit'
-                ])
-                ->getMock();
+            $this->defaultAdapter = $this->createMock(CacheAdapterInterface::class);
 
             $this->cacheManager = new CacheManager($this->defaultAdapter);
         }
