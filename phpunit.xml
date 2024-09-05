@@ -3,6 +3,7 @@
     <testsuites>
         <testsuite name="Temant Cache Tests">
             <directory>Tests</directory>
+            <exclude>./Tests/Adapter/AbstractCacheAdapterTest.php</exclude>
         </testsuite>
     </testsuites>
 
