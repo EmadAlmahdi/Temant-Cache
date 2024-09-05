@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php" colors="true" stopOnFailure="false">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.3/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         cacheDirectory=".phpunit.cache"
+         executionOrder="depends,defects"
+         shortenArraysForExportThreshold="10"
+         requireCoverageMetadata="true"
+         beStrictAboutCoverageMetadata="true"
+         beStrictAboutOutputDuringTests="true"
+         displayDetailsOnPhpunitDeprecations="true"
+         failOnPhpunitDeprecation="true"
+         failOnRisky="true"
+         failOnWarning="true">
     <testsuites>
         <testsuite name="Temant Cache Tests">
             <directory>Tests</directory>
-            <exclude>./Tests/Adapter/AbstractCacheAdapterTest.php</exclude>
         </testsuite>
     </testsuites>
+
+    <source ignoreIndirectDeprecations="true" restrictNotices="true" restrictWarnings="true">
+        <include>
+            <directory>Src</directory>
+        </include>
+    </source> 
 
     <coverage includeUncoveredFiles="true"
         pathCoverage="false"
@@ -16,10 +33,5 @@
             <html outputDirectory="coverage"/>
         </report>
     </coverage> 
-
-    <source>
-        <include>
-            <directory suffix=".php">./src</directory>
-        </include>
-    </source>
-</phpunit>
+ 
+</phpunit> 
