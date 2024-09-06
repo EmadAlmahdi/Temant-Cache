@@ -34,6 +34,7 @@ jobs:
         php-version: '8.3'
         tools: composer, phpunit, phpstan
         extensions: redis, memcached
+        coverage: xdebug
 
     # Install dependencies
     - name: Install dependencies
