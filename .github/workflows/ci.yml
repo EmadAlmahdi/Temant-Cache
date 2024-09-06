@@ -36,17 +36,18 @@ jobs:
         extensions: redis, memcached
         coverage: xdebug
 
+    # Install dependencies
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    # Cache composer dependencies
     - name: Cache Composer dependencies
       uses: actions/cache@v4
       with:
         path: vendor
         key: composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: composer-
-
-    # Install dependencies
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
-
+    
     # Run PHPStan for static analysis
     - name: Run PHPStan
       run: vendor/bin/phpstan analyse
