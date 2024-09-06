@@ -7,18 +7,16 @@
         </testsuite>
     </testsuites>
 
-    <coverage includeUncoveredFiles="true"
-        pathCoverage="false"
-        ignoreDeprecatedCodeUnits="true"
-        disableCodeCoverageIgnore="false">
+    <coverage>
         <report>
+            <clover outputFile="clover.xml" />
             <html outputDirectory="coverage" />
         </report>
     </coverage>
 
     <source>
         <include>
-            <directory suffix=".php">./src</directory>
+            <directory suffix=".php">./Src</directory>
         </include>
     </source>
 </phpunit>
