@@ -35,11 +35,6 @@ jobs:
         tools: composer, phpunit, phpstan
         extensions: redis, memcached
 
-    # Install code coverage driver
-    - name: Install Xdebug
-      run: sudo apt-get install php-xdebug
-  
-
     # Install dependencies
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
