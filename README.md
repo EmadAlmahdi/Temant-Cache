@@ -4,6 +4,7 @@
 ![Build Status](https://github.com/EmadAlmahdi/Temant-Cache/actions/workflows/ci.yml/badge.svg) 
 ![Coverage Status](https://codecov.io/gh/EmadAlmahdi/Temant-Cache/branch/main/graph/badge.svg)
 ![License](https://img.shields.io/github/license/EmadAlmahdi/Temant-Cache)
+![PHPStan](https://img.shields.io/badge/PHPStan-level%20max-brightgreen)
 
 A flexible caching system that supports multiple adapters, including Redis, Memcached, and File-based caching. This library is PSR-6 compatible, making it easy to integrate with existing PHP applications.
 
