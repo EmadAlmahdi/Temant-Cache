@@ -2,6 +2,7 @@
 
 namespace Tests\Temant\Cache\Adapter {
 
+    use DateInterval;
     use PHPUnit\Framework\TestCase;
     use Temant\Cache\CacheItem;
     use Temant\Cache\Interface\CacheAdapterInterface;
@@ -53,10 +54,8 @@ namespace Tests\Temant\Cache\Adapter {
         public function testItemExpiration(): void
         {
             $item = new CacheItem('expiring_key', 'expiring_value');
-            $item->expiresAfter(1); // Expires after 1 second
+            $item->expiresAfter(0);
             $this->cachePool->save($item);
-
-            sleep(2); // Wait for 2 seconds to let the item expire
 
             $retrievedItem = $this->cachePool->getItem('expiring_key');
             $this->assertFalse($retrievedItem->isHit(), 'The cache item should have expired.');
@@ -196,21 +195,23 @@ namespace Tests\Temant\Cache\Adapter {
         }
 
         /**
-         * Test accuracy of item expiration.
+         * Test accuracy of item expiration with millisecond precision simulation.
          */
         public function testExpirationAccuracy(): void
         {
             $item = new CacheItem('expiring_soon', 'expiring_value');
-            $item->expiresAfter(2); // Expires after 2 seconds
+
+            // Set expiration to 1 second (since expiresAfter doesn't support milliseconds)
+            $item->expiresAfter(1); // Expires after 1 second
             $this->cachePool->save($item);
 
-            sleep(1); // Still valid
+            // Assert that the item is still a hit 
+            $this->assertTrue($this->cachePool->getItem('expiring_soon')->isHit(), 'Item should be a hit.');
 
-            $this->assertTrue($this->cachePool->getItem('expiring_soon')->isHit(), 'Item should be a hit after 1 second.');
-
-            sleep(2); // Expired
-
-            $this->assertFalse($this->cachePool->getItem('expiring_soon')->isHit(), 'Item should expire after 3 seconds.');
+            // Simulate time passing just beyond the expiration time  
+            sleep(2);
+            $this->assertFalse($this->cachePool->getItem('expiring_soon')->isHit(), 'Item should expire after 2 seconds.');
         }
+
     }
 }

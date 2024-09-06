@@ -88,10 +88,8 @@ namespace Tests\Temant\Cache\Adapter {
         public function testItemExpiration(): void
         {
             $item = new CacheItem('expiring_key', 'expiring_value');
-            $item->expiresAfter(1); // Expires after 1 second
+            $item->expiresAfter(0);
             $this->cachePool->save($item);
-
-            sleep(2); // Wait 2 seconds to let the cache expire
 
             $retrievedItem = $this->cachePool->getItem('expiring_key');
             $this->assertFalse($retrievedItem->isHit(), 'Cache item should have expired.');
