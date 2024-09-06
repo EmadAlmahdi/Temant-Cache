@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php" colors="true" stopOnFailure="false">
+<phpunit cacheDirectory="build/.phpunit.cache" bootstrap="vendor/autoload.php" colors="true" stopOnFailure="false">
     <testsuites>
         <testsuite name="Temant Cache Tests">
             <directory>Tests</directory>
@@ -9,10 +9,10 @@
 
     <coverage>
         <report>
-            <clover outputFile="clover.xml" />
-            <html outputDirectory="coverage" />
+            <clover outputFile="coverage/clover.xml" />
+            <html outputDirectory="coverage/html" />
         </report>
-    </coverage>
+    </coverage>    
 
     <source>
         <include>
