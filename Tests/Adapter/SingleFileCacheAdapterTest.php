@@ -3,17 +3,17 @@
 namespace Tests\Temant\Cache\Adapter {
 
     use org\bovigo\vfs\vfsStream;
-    use Temant\Cache\Adapter\SingleFilePHPCacheAdapter;
+    use Temant\Cache\Adapter\SingleFileCacheAdapter;
     use Temant\Cache\Exception\CacheException;
 
-    class SingleFilePHPCacheAdapterTest extends AbstractCacheAdapterTest
+    class SingleFileCacheAdapterTest extends AbstractCacheAdapterTest
     {
         private string $cacheFile;
 
         protected function setUp(): void
         {
             $this->cacheFile = sys_get_temp_dir() . '/single_file_php_cache_test.php';
-            $this->cachePool = new SingleFilePHPCacheAdapter($this->cacheFile);
+            $this->cachePool = new SingleFileCacheAdapter($this->cacheFile);
             // Ensure the file is clean before running tests
             if (file_exists($this->cacheFile)) {
                 unlink($this->cacheFile);
@@ -41,7 +41,7 @@ namespace Tests\Temant\Cache\Adapter {
             $this->expectExceptionMessage("Failed to create cache file: vfs://root/cache_test");
 
             // Try to instantiate FileSystemCacheAdapter with a directory that cannot be created
-            new SingleFilePHPCacheAdapter(vfsStream::url('root/cache_test'));
+            new SingleFileCacheAdapter(vfsStream::url('root/cache_test'));
         }
 
         /**

@@ -39,7 +39,6 @@ We welcome contributions! To help ensure the project remains maintainable and co
 
 ## Code Guidelines
 
-- Follow [PSR-12](https://www.php-fig.org/psr/psr-12/) coding standards.
 - Add tests for any new functionality.
 - Ensure that the code coverage does not decrease.
 

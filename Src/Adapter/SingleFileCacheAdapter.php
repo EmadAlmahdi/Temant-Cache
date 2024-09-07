@@ -12,7 +12,7 @@ namespace Temant\Cache\Adapter {
      *
      * A file-based cache implementation that stores all cache items in a single PHP file.
      */
-    class SingleFilePHPCacheAdapter implements CacheAdapterInterface
+    class SingleFileCacheAdapter implements CacheAdapterInterface
     {
         /**
          * @var string The path to the single PHP file where cache items are stored.
@@ -202,10 +202,21 @@ namespace Temant\Cache\Adapter {
          */
         private function loadCache(): array
         {
-            $cache = include $this->cacheFile;
+            if (!file_exists($this->cacheFile)) {
+                return [];
+            }
 
-            return is_array($cache) ? $cache : [];
+            $cache = file_get_contents($this->cacheFile);
+
+            // Check if cache content is a valid serialized string
+            if ($cache && @unserialize($cache) === false && $cache !== 'b:0;') {
+                // If invalid, treat the cache as empty to avoid errors
+                return [];
+            }
+
+            return unserialize($cache) ?: [];
         }
+
 
         /**
          * Saves the in-memory cache to the PHP file.
