@@ -208,15 +208,24 @@ namespace Temant\Cache\Adapter {
 
             $cache = file_get_contents($this->cacheFile);
 
-            // Check if cache content is a valid serialized string
-            if ($cache && @unserialize($cache) === false && $cache !== 'b:0;') {
-                // If invalid, treat the cache as empty to avoid errors
-                return [];
+            // Attempt to unserialize the content if it exists
+            if ($cache !== false) {
+                $unserializedData = @unserialize($cache);
+                // Check if unserialization was successful and the data is in the expected format
+                if (is_array($unserializedData)) {
+                    foreach ($unserializedData as $key => $value) {
+                        if (!is_array($value) || !isset($value['value']) || !array_key_exists('expiration', $value)) {
+                            // Invalidate the whole cache if any item is malformed
+                            return [];
+                        }
+                    }
+                    return $unserializedData;
+                }
             }
 
-            return unserialize($cache) ?: [];
+            // Return an empty array if the file content is invalid or empty
+            return [];
         }
-
 
         /**
          * Saves the in-memory cache to the PHP file.
@@ -225,7 +234,7 @@ namespace Temant\Cache\Adapter {
          */
         private function saveCache(): bool
         {
-            $data = "<?php return " . var_export($this->cache, true) . ";";
+            $data = serialize($this->cache);
             return $this->writeFileWithLock($this->cacheFile, $data);
         }
 

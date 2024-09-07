@@ -78,7 +78,7 @@ namespace Tests\Temant\Cache\Adapter {
             if (!$fileHandle) {
                 return;
             }
-            
+
             flock($fileHandle, LOCK_EX);
 
             // Expect the file locking to fail when `flock` is called again in `writeFileWithLock`
@@ -94,5 +94,88 @@ namespace Tests\Temant\Cache\Adapter {
             flock($fileHandle, LOCK_UN);
             fclose($fileHandle);
         }
+
+        public function testLoadCacheWithInvalidData(): void
+        {
+            // Create a file with invalid serialized data
+            file_put_contents($this->cacheFile, '<?php return "invalid serialized data";');
+
+            // Call loadCache and expect an empty array due to invalid data
+            $reflection = new \ReflectionClass($this->cachePool);
+            $method = $reflection->getMethod('loadCache');
+            $method->setAccessible(true);
+
+            $result = $method->invoke($this->cachePool);
+            $this->assertIsArray($result, 'Expected an array.');
+            $this->assertEmpty($result, 'Expected an empty array due to invalid data.');
+        }
+
+        public function testLoadCacheWithValidData(): void
+        {
+            // Create a file with valid serialized data
+            $sampleData = ['key1' => ['value' => 'data1', 'expiration' => null]];
+            file_put_contents($this->cacheFile, serialize($sampleData));
+
+            // Call loadCache and expect the valid data array
+            $reflection = new \ReflectionClass($this->cachePool);
+            $method = $reflection->getMethod('loadCache');
+            $method->setAccessible(true);
+
+            $result = $method->invoke($this->cachePool);
+            $this->assertIsArray($result, 'Expected an array.');
+            $this->assertEquals($sampleData, $result, 'Expected the array to match the sample data.');
+        }
+
+        public function testLoadCacheWithEmptyFile(): void
+        {
+            // Create an empty file
+            file_put_contents($this->cacheFile, '');
+
+            // Call loadCache and expect an empty array
+            $reflection = new \ReflectionClass($this->cachePool);
+            $method = $reflection->getMethod('loadCache');
+            $method->setAccessible(true);
+
+            $result = $method->invoke($this->cachePool);
+            $this->assertIsArray($result, 'Expected an array.');
+            $this->assertEmpty($result, 'Expected an empty array for an empty file.');
+        }
+
+        public function testLoadCacheWithNonExistentFile(): void
+        {
+            // Ensure the file does not exist
+            if (file_exists($this->cacheFile)) {
+                unlink($this->cacheFile);
+            }
+
+            // Call loadCache and expect an empty array
+            $reflection = new \ReflectionClass($this->cachePool);
+            $method = $reflection->getMethod('loadCache');
+            $method->setAccessible(true);
+
+            $result = $method->invoke($this->cachePool);
+            $this->assertIsArray($result, 'Expected an array.');
+            $this->assertEmpty($result, 'Expected an empty array for non-existent file.');
+        }
+
+        public function testLoadCacheWithMalformedDataEntry(): void
+        {
+            // Create a file with one valid and one invalid cache entry
+            $malformedData = [
+                'key1' => ['value' => 'data1', 'expiration' => time() + 3600], // valid entry
+                'key2' => ['wrong_key' => 'data2'] // malformed entry missing 'value' and 'expiration'
+            ];
+            file_put_contents($this->cacheFile, serialize($malformedData));
+
+            // Call loadCache and expect an empty array because of the malformed entry
+            $reflection = new \ReflectionClass($this->cachePool);
+            $method = $reflection->getMethod('loadCache');
+            $method->setAccessible(true);
+
+            $result = $method->invoke($this->cachePool);
+            $this->assertIsArray($result, 'Expected an array.');
+            $this->assertEmpty($result, 'Expected an empty array due to the presence of malformed data.');
+        }
+
     }
 }
